@@ -3,17 +3,21 @@
 use bevy::{
     pbr::wireframe::{Wireframe, WireframeConfig, WireframePlugin},
     prelude::*,
-    render::{render_resource::WgpuFeatures, settings::WgpuSettings, RenderPlugin},
+    render::{
+        render_resource::WgpuFeatures,
+        settings::{RenderSettings, WgpuSettings},
+        RenderPlugin,
+    },
 };
 
 fn main() {
     App::new()
         .add_plugins((
             DefaultPlugins.set(RenderPlugin {
-                wgpu_settings: WgpuSettings {
+                render_settings: RenderSettings::Automatic(WgpuSettings {
                     features: WgpuFeatures::POLYGON_MODE_LINE,
                     ..default()
-                },
+                }),
             }),
             WireframePlugin,
         ))

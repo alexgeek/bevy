@@ -1,4 +1,7 @@
 use std::borrow::Cow;
+use std::sync::Mutex;
+use crate::renderer::{RenderAdapter, RenderAdapterInfo, RenderDevice, RenderQueue};
+use wgpu::Instance;
 
 pub use wgpu::{
     Backends, Dx12Compiler, Features as WgpuFeatures, Limits as WgpuLimits, PowerPreference,
@@ -53,9 +56,6 @@ impl Default for WgpuSettings {
 
         let backends = Some(wgpu::util::backend_bits_from_env().unwrap_or(default_backends));
 
-        let power_preference =
-            wgpu::util::power_preference_from_env().unwrap_or(PowerPreference::HighPerformance);
-
         let priority = settings_priority_from_env().unwrap_or(WgpuSettingsPriority::Functionality);
 
         let limits = if cfg!(all(feature = "webgl", target_arch = "wasm32"))
@@ -82,7 +82,7 @@ impl Default for WgpuSettings {
         Self {
             device_label: Default::default(),
             backends,
-            power_preference,
+            power_preference: PowerPreference::HighPerformance,
             priority,
             features: wgpu::Features::TEXTURE_ADAPTER_SPECIFIC_FORMAT_FEATURES,
             disabled_features: None,
@@ -90,6 +90,21 @@ impl Default for WgpuSettings {
             constrained_limits: None,
             dx12_shader_compiler: dx12_compiler,
         }
+    }
+}
+
+/// An enum describing how the renderer will initialize resources.
+pub enum RenderSettings {
+    /// Allows renderer resource initialization to happen outside of the rendering plugin. 
+    /// Because [`Instance`] can't be cloned, it needs to be wrapped in a Mutex so its value can be taken.
+    Manual(RenderDevice, RenderQueue, RenderAdapterInfo, RenderAdapter, Mutex<Instance>),
+    /// Lets the rendering plugin create resources itself.
+    Automatic(WgpuSettings),
+}
+
+impl Default for RenderSettings {
+    fn default() -> Self {
+        Self::Automatic(Default::default())
     }
 }
 

@@ -6,16 +6,19 @@
 
 use bevy::{
     prelude::*,
-    render::{settings::WgpuSettings, RenderPlugin},
+    render::{
+        settings::{RenderSettings, WgpuSettings},
+        RenderPlugin,
+    },
 };
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(RenderPlugin {
-            wgpu_settings: WgpuSettings {
+            render_settings: RenderSettings::Automatic(WgpuSettings {
                 backends: None,
                 ..default()
-            },
+            }),
         }))
         .run();
 }
