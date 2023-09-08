@@ -1,6 +1,6 @@
+use crate::renderer::{RenderAdapter, RenderAdapterInfo, RenderDevice, RenderQueue};
 use std::borrow::Cow;
 use std::sync::Mutex;
-use crate::renderer::{RenderAdapter, RenderAdapterInfo, RenderDevice, RenderQueue};
 use wgpu::Instance;
 
 pub use wgpu::{
@@ -95,9 +95,15 @@ impl Default for WgpuSettings {
 
 /// An enum describing how the renderer will initialize resources.
 pub enum RenderSettings {
-    /// Allows renderer resource initialization to happen outside of the rendering plugin. 
+    /// Allows renderer resource initialization to happen outside of the rendering plugin.
     /// Because [`Instance`] can't be cloned, it needs to be wrapped in a Mutex so its value can be taken.
-    Manual(RenderDevice, RenderQueue, RenderAdapterInfo, RenderAdapter, Mutex<Instance>),
+    Manual(
+        RenderDevice,
+        RenderQueue,
+        RenderAdapterInfo,
+        RenderAdapter,
+        Mutex<Instance>,
+    ),
     /// Lets the rendering plugin create resources itself.
     Automatic(WgpuSettings),
 }
