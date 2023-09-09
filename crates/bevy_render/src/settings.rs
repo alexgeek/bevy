@@ -113,7 +113,13 @@ pub enum RenderSettings {
 
 impl RenderSettings {
     /// Function to create a [`RenderSettings::Manual`] variant.
-    pub fn manual(device: RenderDevice, queue: RenderQueue, adapter_info: RenderAdapterInfo, adapter: RenderAdapter, instance: Instance) -> Self {
+    pub fn manual(
+        device: RenderDevice,
+        queue: RenderQueue,
+        adapter_info: RenderAdapterInfo,
+        adapter: RenderAdapter,
+        instance: Instance,
+    ) -> Self {
         Self::Manual(device, queue, adapter_info, adapter, Mutex::new(instance))
     }
 }
