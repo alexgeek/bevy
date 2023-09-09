@@ -389,6 +389,7 @@ fn extract(main_world: &mut World, render_app: &mut App) {
     main_world.insert_resource(ScratchMainWorld(scratch_world));
 }
 
+/// SAFETY: this function must be called from the main thread.
 unsafe fn initialize_render_app(app: &mut App) {
     app.init_resource::<ScratchMainWorld>();
 
